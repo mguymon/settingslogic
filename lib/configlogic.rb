@@ -120,6 +120,7 @@ class Configlogic < Hash
   # Called for dynamically-defined keys, and also the first key deferenced at the top-level, if load! is not used.
   # Otherwise, create_accessors! (called by new) will have created actual methods for each key.
   def method_missing(name, *args, &block)
+    super if name === :to_ary # delegate to_ary to Hash
     key = name.to_s
     return missing_key("Missing setting '#{key}' in #{@section}") unless has_key? key
     value = fetch(key)
