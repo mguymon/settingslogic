@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    settingslogic (2.0.9)
+    configlogic (2.0.9.1)
 
 GEM
   remote: http://rubygems.org/
@@ -21,6 +21,6 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  configlogic!
   rake
   rspec
-  settingslogic!

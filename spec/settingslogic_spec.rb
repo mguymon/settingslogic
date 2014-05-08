@@ -1,6 +1,6 @@
 require File.expand_path(File.dirname(__FILE__) + "/spec_helper")
 
-describe "Settingslogic" do
+describe "Configlogic" do
   it "should access settings" do
     Settings.setting2.should == 5
   end
@@ -53,7 +53,7 @@ describe "Settingslogic" do
     begin
       Settings.missing
     rescue => e
-      e.should be_kind_of Settingslogic::MissingSetting
+      e.should be_kind_of Configlogic::MissingConfig
     end
     e.should_not be_nil
     e.message.should =~ /Missing setting 'missing' in/
@@ -62,7 +62,7 @@ describe "Settingslogic" do
     begin
       Settings.language.missing
     rescue => e
-      e.should be_kind_of Settingslogic::MissingSetting
+      e.should be_kind_of Configlogic::MissingConfig
     end
     e.should_not be_nil
     e.message.should =~ /Missing setting 'missing' in 'language' section/
@@ -73,7 +73,7 @@ describe "Settingslogic" do
     begin
       Settings.language.erlang
     rescue => e
-      e.should be_kind_of Settingslogic::MissingSetting
+      e.should be_kind_of Configlogic::MissingConfig
     end
     e.should_not be_nil
     e.message.should =~ /Missing setting 'erlang' in 'language' section/
@@ -101,7 +101,7 @@ describe "Settingslogic" do
   end
 
   it "should raise an error on a nil source argument" do
-    class NoSource < Settingslogic; end
+    class NoSource < Configlogic; end
     e = nil
     begin
       NoSource.foo.bar
@@ -158,10 +158,10 @@ describe "Settingslogic" do
     Settings2.name.should == "Settings2"
   end
 
-  # If .name is called on Settingslogic itself, handle appropriately
+  # If .name is called on Configlogic itself, handle appropriately
   # by delegating to Hash
   it "should have the parent class always respond with Module.name" do
-    Settingslogic.name.should == 'Settingslogic'
+    Configlogic.name.should == 'Configlogic'
   end
 
   # If .name is a property, respond with that instead of delegating to superclass

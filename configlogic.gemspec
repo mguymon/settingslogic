@@ -2,7 +2,7 @@
 $:.push File.expand_path("../lib", __FILE__)
 
 Gem::Specification.new do |s|
-  s.name        = "mguymon_settingslogic"
+  s.name        = "configlogic"
   s.version     = "2.0.9.1"
   s.platform    = Gem::Platform::RUBY
   s.authors     = ["Ben Johnson"]

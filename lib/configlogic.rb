@@ -3,15 +3,15 @@ require "erb"
 require 'open-uri'
 
 # A simple settings solution using a YAML file. See README for more information.
-class Settingslogic < Hash
-  class MissingSetting < StandardError; end
+class Configlogic < Hash
+  class MissingConfig < StandardError; end
 
   class << self
     def name # :nodoc:
       self.superclass != Hash && instance.key?("name") ? instance.name : super
     end
         
-    # Enables Settings.get('nested.key.name') for dynamic access
+    # Enables Configs.get('nested.key.name') for dynamic access
     def get(key)
       parts = key.split('.')
       curs = self
@@ -38,7 +38,7 @@ class Settingslogic < Hash
     end
 
     def []=(key, val)
-      # Setting[:key][:key2] = 'value' for dynamic settings
+      # Config[:key][:key2] = 'value' for dynamic settings
       val = new(val, source) if val.is_a? Hash
       instance.store(key.to_s, val)
       instance.create_accessor_for(key, val)
@@ -74,7 +74,7 @@ class Settingslogic < Hash
       end
 
       # It would be great to DRY this up somehow, someday, but it's difficult because
-      # of the singleton pattern.  Basically this proxies Setting.foo to Setting.instance.foo
+      # of the singleton pattern.  Basically this proxies Config.foo to Config.instance.foo
       def create_accessors!
         instance.each do |key,val|
           create_accessor_for(key)
@@ -90,10 +90,10 @@ class Settingslogic < Hash
 
   # Initializes a new settings object. You can initialize an object in any of the following ways:
   #
-  #   Settings.new(:application) # will look for config/application.yml
-  #   Settings.new("application.yaml") # will look for application.yaml
-  #   Settings.new("/var/configs/application.yml") # will look for /var/configs/application.yml
-  #   Settings.new(:config1 => 1, :config2 => 2)
+  #   Configs.new(:application) # will look for config/application.yml
+  #   Configs.new("application.yaml") # will look for application.yaml
+  #   Configs.new("/var/configs/application.yml") # will look for /var/configs/application.yml
+  #   Configs.new(:config1 => 1, :config2 => 2)
   #
   # Basically if you pass a symbol it will look for that file in the configs directory of your rails app,
   # if you are using this in rails. If you pass a string it should be an absolute path to your settings file.
@@ -102,7 +102,7 @@ class Settingslogic < Hash
     #puts "new! #{hash_or_file}"
     case hash_or_file
     when nil
-      raise Errno::ENOENT, "No file specified as Settingslogic source"
+      raise Errno::ENOENT, "No file specified as Configlogic source"
     when Hash
       self.replace hash_or_file
     else
@@ -132,7 +132,7 @@ class Settingslogic < Hash
   end
 
   def []=(key,val)
-    # Setting[:key][:key2] = 'value' for dynamic settings
+    # Config[:key][:key2] = 'value' for dynamic settings
     val = self.class.new(val, @section) if val.is_a? Hash
     store(key.to_s, val)
     create_accessor_for(key, val)
@@ -181,7 +181,7 @@ class Settingslogic < Hash
       
       k = (tuple.first.to_sym rescue tuple.first) || tuple.first
             
-      v = k.is_a?(Symbol) ? send(k) : tuple.last # make sure the value is accessed the same way Settings.foo.bar works
+      v = k.is_a?(Symbol) ? send(k) : tuple.last # make sure the value is accessed the same way Configs.foo.bar works
       
       memo[k] = v && v.respond_to?(:symbolize_keys) ? v.symbolize_keys : v #recurse for nested hashes
       
@@ -193,6 +193,6 @@ class Settingslogic < Hash
   def missing_key(msg)
     return nil if self.class.suppress_errors
 
-    raise MissingSetting, msg
+    raise MissingConfig, msg
   end
 end
