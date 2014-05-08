@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    configlogic (2.0.9.1)
+    configlogic (2.0.10)
 
 GEM
   remote: http://rubygems.org/
